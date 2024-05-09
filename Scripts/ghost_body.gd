@@ -7,7 +7,7 @@ func _ready():
 	move()
 	
 func move():
-	self.modulate = (get_parent() as Ghost).body_color
+	revert_color()
 	animation_player.play("moving")
 	
 func frighten():
@@ -19,3 +19,9 @@ func frighten_conclude():
 
 func is_playing(state: String) -> bool:
 	return animation_player.current_animation == state
+
+func update_color(color: Color):
+	self.modulate = color
+	
+func revert_color():
+	self.modulate = (get_parent() as Ghost).body_color

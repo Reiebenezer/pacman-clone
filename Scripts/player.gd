@@ -9,7 +9,10 @@ var shape_query = PhysicsShapeQueryParameters2D.new()
 @onready var collision_shape_2d = $CollisionShape2D
 @onready var animated_sprite_2d = $AnimatedSprite2D
 
-const SPEED = 150.0
+@onready var game = $".."
+
+@export var SPEED = 150
+var dead: bool = false
 
 func _ready():
 	shape_query.shape = collision_shape_2d.shape
@@ -58,8 +61,12 @@ func handle_direction(next_dir: Vector2, delta: float):
 		
 		
 func died():
+	dead = true	
+	SPEED = 0
+	
 	animated_sprite_2d.play("dead")
 	animated_sprite_2d.animation_finished.connect(death_animation_finished)
+	
 	print("Player Died")
 
 func death_animation_finished():
@@ -67,4 +74,4 @@ func death_animation_finished():
 	set_physics_process(false)
 	set_collision_mask_value(1, false)
 	
-	await get_tree().create_timer(1.0).timeout
+	game.end(false)
