@@ -9,7 +9,10 @@ var shape_query = PhysicsShapeQueryParameters2D.new()
 @onready var collision_shape_2d = $CollisionShape2D
 @onready var animated_sprite_2d = $AnimatedSprite2D
 
+@onready var death_sound = $"../Sounds/Death"	
+
 @onready var game = $".."
+@onready var timer = $"../Timer"
 
 @export var SPEED = 150
 var dead: bool = false
@@ -58,9 +61,12 @@ func handle_direction(next_dir: Vector2, delta: float):
 		
 	elif direction == Vector2.UP:
 		rotation_degrees = 270
-		
-		
+
+
 func died():
+	death_sound.play()
+	timer.stop()
+	
 	dead = true	
 	SPEED = 0
 	

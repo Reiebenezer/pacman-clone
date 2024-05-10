@@ -44,4 +44,6 @@ collision_mask = 17
 shape = SubResource("RectangleShape2D_l7iio")
 
 [connection signal="body_entered" from="PortalRight/Area2D" to="." method="_on_area_right_2d_body_entered"]
+[connection signal="body_exited" from="PortalRight/Area2D" to="." method="_on_area_right_2d_body_exited"]
 [connection signal="body_entered" from="PortalLeft/Area2D" to="." method="_on_area_left_2d_body_entered"]
+[connection signal="body_exited" from="PortalLeft/Area2D" to="." method="_on_area_left_2d_body_exited"]

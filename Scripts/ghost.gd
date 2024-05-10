@@ -44,15 +44,16 @@ var current_state: GhostState
 @onready var eyes = $Eyes as GhostEyes
 
 @onready var navigation_agent_2d = $NavigationAgent2D
+@onready var animation_player = $AnimationPlayer
+
 @onready var scatter_timer = $ScatterTimer
 @onready var chase_interval = $ChaseInterval
 @onready var frightened_timer = $FrightenedTimer
-@onready var score = $text/Score
- 
-@onready var animation_player = $AnimationPlayer
 
 @onready var ability_cooldown = $AbilityCooldown
 @onready var ability_duration = $AbilityDuration
+
+@onready var power_pellet_sound: AudioStreamPlayer2D = $"../../Sounds/PowerPellet"
 
 func _ready():
 	#if targeting != GhostTargeting.Inky:
@@ -60,9 +61,17 @@ func _ready():
 	
 	call_deferred("setup")
 	
+	# Survival Mode
+	if Globals.is_survival:
+		scatter_timer.wait_time = 3.0
+		frightened_timer.wait_time = 6.0
+		ability_duration.wait_time = 6.0
+		ability_cooldown.wait_time = 3.0
+	
 func _process(delta):
 	if 	not frightened_timer.is_stopped() and \
-	   	frightened_timer.time_left < frightened_timer.wait_time * 0.5:
+	   	frightened_timer.time_left < frightened_timer.wait_time * 0.5 and \
+		current_state == GhostState.FRIGHTENED:
 			body.frighten_conclude()		
 	
 	move_ghost(navigation_agent_2d.get_next_path_position(), delta)
@@ -123,6 +132,8 @@ func scatter():
 	ability_cooldown.stop()
 	ability_duration.stop()
 	
+	reset_nav_layers()
+	
 	current_state = GhostState.SCATTER
 	navigation_agent_2d.target_position = scatter_targets[current_scatter_index].position
 	
@@ -134,6 +145,7 @@ func scatter():
 func _on_scatter_timeout():
 	if current_state == GhostState.SCATTER and !player.dead:
 		chase()
+		scatter_timer.wait_time *= 0.5
 
 func chase():
 	current_state = GhostState.CHASE
@@ -177,6 +189,9 @@ func frighten():
 	eyes.hide()
 	body.frighten()
 	
+	if !power_pellet_sound.playing:
+		power_pellet_sound.play()
+	
 	frightened_timer.start()	
 	chase_interval.stop()
 	
@@ -190,6 +205,11 @@ func frighten():
 	speed = FRIGHTENED_SPEED
 	
 func _on_frightened_timer_timeout():
+	power_pellet_sound.stop()
+	
+	if current_state == GhostState.EATEN:
+		return
+	
 	body.move()
 	eyes.show()
 	
@@ -214,16 +234,18 @@ func _on_body_entered(collision_body):
 			_player.died()
 			
 		if targeting == GhostTargeting.Inky:
-			set_collision_mask_value(3, true)
+			reset_nav_layers()
+			
+func reset_nav_layers():
+	set_collision_mask_value(3, true)
 				
-			navigation_agent_2d.set_navigation_layer_value(2, false)
-			navigation_agent_2d.set_navigation_layer_value(1, true)
+	navigation_agent_2d.set_navigation_layer_value(2, false)
+	navigation_agent_2d.set_navigation_layer_value(1, true)
 
 func get_eaten():
 	body.hide()
 	eyes.show()
 	
-	frightened_timer.stop()
 	ability_cooldown.stop()
 	ability_duration.stop()
 	
@@ -233,6 +255,8 @@ func get_eaten():
 	game.add_child(text)
 	text.global_position = global_position
 	game.score_ghost()
+	
+	$"../../Sounds/Eatghost".play()
 	
 	current_state = GhostState.EATEN
 	speed = EATEN_SPEED
@@ -246,7 +270,7 @@ func _on_ability_cooldown_timeout():
 	if current_state == GhostState.CHASE:
 		match targeting:
 			GhostTargeting.Blinky:
-				speed *= 1.25
+				speed *= 1.5 if Globals.is_survival else 1.25
 				body.update_color(Color.MEDIUM_VIOLET_RED)
 				
 			GhostTargeting.Pinky:
@@ -284,11 +308,7 @@ func _on_ability_duration_timeout():
 				global_position = new_position
 				
 			GhostTargeting.Inky:
-				set_collision_mask_value(3, true)
-				
-				navigation_agent_2d.set_navigation_layer_value(2, false)
-				navigation_agent_2d.set_navigation_layer_value(1, true)
-				
+				reset_nav_layers()
 				speed = ORIGINAL_SPEED
 				
 			GhostTargeting.Clyde:
