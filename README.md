@@ -13,3 +13,15 @@ Each of the four ghosts in the maze now have their own unique abilities, each ta
 ### New Gamemode: Brutal Survival
 
 Brutal Survival is a new gamemode, where instead of eating pellets, the player (pacman) must endure for as long as possible against the stronger and faster ghost AI, with their ability cooldowns and scatter timers lowered and ability durations increased. The player can eat a power pellet placed randomly on the board, and a new one will spawn when the pellet is eaten. The frightened duration is cut in half in this game mode.
+
+### Support
+
+Thanks to the following for giving immense support for this project:
+- My Groupmates (Algorithms and Complexity)
+  - Prince Alexander Malatuba
+  - Jill Navarra
+  - Ashley Denise Feliciano
+  - Pauline Joy Bautista
+ 
+- Emotional Support and Playtester
+  - Dhominick John Billena
