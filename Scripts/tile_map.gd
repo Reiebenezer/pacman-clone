@@ -7,6 +7,13 @@ var empty_cells = []
 var spawnable_cells = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	#for cell in get_used_cells(0):
+		#if get_cell_tile_data(0, cell).get_custom_data('isEmpty') && \
+			#get_cell_tile_data(0, cell).get_custom_data('isSpawnable'):
+			#pellets.spawn_pellet(cell)
+			#spawnable_cells.push_front(cell)			
+			#return
+	
 	for cell in get_used_cells(0):
 		if get_cell_tile_data(0, cell).get_custom_data("isEmpty"):
 			empty_cells.push_front(cell)

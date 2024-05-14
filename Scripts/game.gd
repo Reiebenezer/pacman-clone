@@ -20,6 +20,8 @@ var ghost_score_increment = 200
 @onready var end_text = $CanvasLayer/GameOverScreen/game_over as Label
 @onready var result = $CanvasLayer/GameOverScreen/result as Label
 
+@onready var player = $Player
+
 func _ready():
 	pellets_eaten_display.text = display_text + str(pellets_eaten)
 	score_display.text = "Score: 0"
@@ -60,12 +62,14 @@ func end(completed: bool):
 	if completed:
 		end_text.text = "You Won!"
 		
-		get_tree().paused = true
+		player.set_physics_process(false)
+		player.set_collision_mask_value(5, false)
+		
 
 func _on_button_pressed():
-	get_tree().paused = false	
 	get_tree().reload_current_scene()
 
 func _on_timer_timeout():
 	if Globals.is_survival:
 		score_pellet()
+

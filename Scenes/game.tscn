@@ -690,8 +690,9 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Play Again"
 
-[node name="Pellets" type="Node" parent="."]
+[node name="Pellets" type="Node" parent="." node_paths=PackedStringArray("ghosts")]
 script = ExtResource("1_bowwf")
+ghosts = [NodePath("../Ghosts/Blinky"), NodePath("../Ghosts/Pinky"), NodePath("../Ghosts/Inky"), NodePath("../Ghosts/Clyde")]
 
 [node name="TileMap" type="TileMap" parent="."]
 unique_name_in_owner = true
@@ -842,17 +843,21 @@ position = Vector2(32, -64)
 [node name="Sounds" type="Node" parent="."]
 
 [node name="Chomp" type="AudioStreamPlayer2D" parent="Sounds"]
+unique_name_in_owner = true
 stream = ExtResource("8_fq4vc")
 
 [node name="Death" type="AudioStreamPlayer2D" parent="Sounds"]
+unique_name_in_owner = true
 stream = ExtResource("9_xa3qo")
 area_mask = 2
 
 [node name="Eatghost" type="AudioStreamPlayer2D" parent="Sounds"]
+unique_name_in_owner = true
 stream = ExtResource("10_4uqwd")
 area_mask = 4
 
 [node name="PowerPellet" type="AudioStreamPlayer2D" parent="Sounds"]
+unique_name_in_owner = true
 stream = ExtResource("11_0k21v")
 
 [connection signal="pressed" from="CanvasLayer/GameOverScreen/Button" to="." method="_on_button_pressed"]

@@ -65,7 +65,9 @@ func handle_direction(next_dir: Vector2, delta: float):
 
 func died():
 	death_sound.play()
-	timer.stop()
+	
+	if timer != null:
+		timer.stop()
 	
 	dead = true	
 	SPEED = 0

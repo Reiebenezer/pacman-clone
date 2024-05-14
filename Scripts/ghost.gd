@@ -53,7 +53,7 @@ var current_state: GhostState
 @onready var ability_cooldown = $AbilityCooldown
 @onready var ability_duration = $AbilityDuration
 
-@onready var power_pellet_sound: AudioStreamPlayer2D = $"../../Sounds/PowerPellet"
+@onready var power_pellet_sound: AudioStreamPlayer2D = %PowerPellet
 
 func _ready():
 	#if targeting != GhostTargeting.Inky:
@@ -179,7 +179,7 @@ func _on_chase_interval_timeout():
 		GhostTargeting.Clyde:
 			var oppositedir = (blinkyGhost.global_position - player.global_position) * -1
 			navigation_agent_2d.target_position = player.global_position + (oppositedir.normalized() * 5 * 16)
-
+ 
 func frighten():
 	if current_state == GhostState.EATEN:
 		return
@@ -231,6 +231,7 @@ func _on_body_entered(collision_body):
 		
 	else:
 		if !player.dead:
+			set_collision_mask_value(1, false)
 			_player.died()
 			
 		if targeting == GhostTargeting.Inky:
